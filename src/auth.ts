@@ -6,10 +6,10 @@ import { prisma } from './lib/prisma';
 import bcryptjs from 'bcryptjs';
 
 async function getUser(email: string) { // ユーザー取得関数
-  return await prisma.user.findUnique({ where: { email: email }});
+  return await prisma.user.findUnique({ where: { email: email } });
 }
- 
-export const { auth, signIn, signOut, handlers} = NextAuth({
+
+export const { auth, signIn, signOut, handlers } = NextAuth({
   ...authConfig,
   providers: [
     Credentials({
@@ -27,4 +27,14 @@ export const { auth, signIn, signOut, handlers} = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = (token.id || token.sub || '') as string;
+        session.user.name = token.name ?? '';
+        session.user.email = token.email ?? '';
+      }
+      return session;
+    }
+  },
 });
