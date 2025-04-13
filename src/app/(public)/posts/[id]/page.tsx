@@ -4,10 +4,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import Link from "next/link";
 import Image from "next/image";
 import { ja } from "date-fns/locale";
 import { format } from "date-fns";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css";
 
 import { getPost } from "@/lib/post";
 import { notFound } from "next/navigation";
@@ -50,7 +53,14 @@ export default async function PostPage({ params }: Params) {
           <CardTitle className="line-clamp-2">{post.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          {post.content}
+          <div className="prose max-w-none">
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+              skipHtml={false}
+              unwrapDisallowed={true}
+            >{post.content}</ReactMarkdown>
+          </div>
         </CardContent>
       </Card>
 

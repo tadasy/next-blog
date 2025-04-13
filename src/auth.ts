@@ -24,6 +24,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           const passwordsMatch = await bcryptjs.compare(password, user.password); // パスワード比較
           if (passwordsMatch) return user;
         }
+        return null;
       },
     }),
   ],
